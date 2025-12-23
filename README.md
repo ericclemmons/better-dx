@@ -2,7 +2,11 @@
 
 This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Router, Hono, ORPC, and more.
 
-## Features
+```shell
+pnpm create better-t-stack@latest better-dx --frontend tanstack-router --backend hono --runtime node --api orpc --auth none --payments none --database none --orm none --db-setup none --package-manager pnpm --git --web-deploy none --server-deploy none --install --addons husky opentui turborepo ultracite wxt --examples ai
+```
+
+## [Features](https://www.better-t-stack.dev/new?rt=node&api=orpc&pm=pnpm&add=husky,opentui,turborepo,ultracite,wxt&db=none&orm=none&au=none&ex=ai&name=better-dx)
 
 - **TypeScript** - For type safety and improved developer experience
 - **TanStack Router** - File-based routing with full type safety
@@ -22,7 +26,6 @@ First, install the dependencies:
 pnpm install
 ```
 
-
 Then, run the development server:
 
 ```bash
@@ -31,12 +34,6 @@ pnpm run dev
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 The API is running at [http://localhost:3000](http://localhost:3000).
-
-
-
-
-
-
 
 ## Project Structure
 
