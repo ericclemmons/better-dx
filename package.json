@@ -9,7 +9,8 @@
   "scripts": {
     "check": "biome check --write .",
     "prepare": "husky",
-    "dev": "turbo dev",
+    "dev": "turbo watch lint dev",
+    "start": "node --watch packages/better-dx/src/cli.ts",
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
