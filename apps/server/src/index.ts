@@ -73,7 +73,7 @@ app.post("/ai", async (c) => {
   const uiMessages = body.messages || [];
   const result = streamText({
     model: google("gemini-2.5-flash"),
-    messages: convertToModelMessages(uiMessages),
+    messages: await convertToModelMessages(uiMessages),
   });
 
   return result.toUIMessageStreamResponse();

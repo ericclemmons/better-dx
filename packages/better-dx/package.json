@@ -23,8 +23,8 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "@hono/node-server": "^1.14.4",
-    "ansi-to-html": "^0.7.2",
+    "@hono/node-server": "catalog:",
+    "ansi-to-html": "catalog:",
     "hono": "catalog:"
   },
   "devDependencies": {
@@ -32,12 +32,12 @@
     "@types/node": "^22.13.11",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@wxt-dev/module-react": "^1.1.5",
+    "@wxt-dev/module-react": "catalog:",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "tsdown": "^0.16.5",
-    "tsx": "^4.19.2",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
     "typescript": "catalog:",
-    "wxt": "^0.20.6"
+    "wxt": "catalog:"
   }
 }
