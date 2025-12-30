@@ -81,6 +81,53 @@ function detectPackageManager(): string {
   return "pnpm";
 }
 
+function spawnProcess(
+  command: string,
+  args: string[],
+  options: { cwd?: string; name: string }
+) {
+  const childProcess = spawn(command, args, {
+    cwd: options.cwd ?? process.cwd(),
+    stdio: ["inherit", "pipe", "pipe"],
+    env: {
+      ...process.env,
+      FORCE_COLOR: "1",
+    },
+  });
+
+  childProcess.stdout?.on("data", (data: Buffer) => {
+    const text = data.toString();
+    process.stdout.write(text);
+
+    broadcast({
+      type: "stdout",
+      data: text,
+      timestamp: Date.now(),
+    });
+  });
+
+  childProcess.stderr?.on("data", (data: Buffer) => {
+    const text = data.toString();
+    process.stderr.write(text);
+
+    broadcast({
+      type: "stderr",
+      data: text,
+      timestamp: Date.now(),
+    });
+  });
+
+  childProcess.on("exit", (code) => {
+    broadcast({
+      type: "system",
+      data: `${options.name} exited with code ${code}`,
+      timestamp: Date.now(),
+    });
+  });
+
+  return childProcess;
+}
+
 function main() {
   const command = process.argv[2];
   const args = process.argv.slice(3);
@@ -101,117 +148,78 @@ function main() {
     timestamp: Date.now(),
   });
 
+  const processes: Array<{ name: string; process: ReturnType<typeof spawn> }> =
+    [];
+
+  const cleanup = () => {
+    log("Shutting down...");
+    for (const { name, process: proc } of processes) {
+      log(`Killing ${name}...`);
+      proc.kill();
+    }
+    server.close();
+    process.exit(0);
+  };
+
+  process.on("SIGINT", cleanup);
+  process.on("SIGTERM", cleanup);
+
   // Run WXT commands
   if (command === "dev" || command === "build" || command === "zip") {
-    log(`Running: wxt ${command} ${args.join(" ")}`);
-
-    // Use pnpm exec to find wxt in node_modules
-    const wxtProcess = spawn(
-      packageManager,
-      ["exec", "wxt", command, ...args],
-      {
-        cwd: PACKAGE_ROOT,
-        stdio: ["inherit", "pipe", "pipe"],
-        env: {
-          ...process.env,
-          FORCE_COLOR: "1",
-        },
-      }
-    );
-
-    wxtProcess.stdout?.on("data", (data: Buffer) => {
-      const text = data.toString();
-      process.stdout.write(text);
-
-      broadcast({
-        type: "stdout",
-        data: text,
-        timestamp: Date.now(),
+    if (command === "dev") {
+      // Start pnpm dev (which runs turbo and handles workspace dev scripts + opencode)
+      const workspaceRoot = join(PACKAGE_ROOT, "../..");
+      log(`Running: ${packageManager} dev`);
+      const pnpmProcess = spawnProcess(packageManager, ["dev"], {
+        cwd: workspaceRoot,
+        name: `${packageManager} dev`,
       });
-    });
+      processes.push({ name: `${packageManager} dev`, process: pnpmProcess });
 
-    wxtProcess.stderr?.on("data", (data: Buffer) => {
-      const text = data.toString();
-      process.stderr.write(text);
+      // Start wxt dev separately (not part of turbo)
+      log(`Running: wxt dev ${args.join(" ")}`);
+      const wxtProcess = spawnProcess(
+        packageManager,
+        ["exec", "wxt", "dev", ...args],
+        {
+          cwd: PACKAGE_ROOT,
+          name: "wxt dev",
+        }
+      );
+      processes.push({ name: "wxt dev", process: wxtProcess });
+    } else {
+      // For build/zip, just run wxt
+      log(`Running: wxt ${command} ${args.join(" ")}`);
+      const wxtProcess = spawnProcess(
+        packageManager,
+        ["exec", "wxt", command, ...args],
+        {
+          cwd: PACKAGE_ROOT,
+          name: `wxt ${command}`,
+        }
+      );
+      processes.push({ name: `wxt ${command}`, process: wxtProcess });
 
-      broadcast({
-        type: "stderr",
-        data: text,
-        timestamp: Date.now(),
+      wxtProcess.on("exit", () => {
+        cleanup();
       });
-    });
-
-    wxtProcess.on("exit", (code) => {
-      broadcast({
-        type: "system",
-        data: `wxt ${command} exited with code ${code}`,
-        timestamp: Date.now(),
-      });
-      cleanup();
-    });
-
-    const cleanup = () => {
-      log("Shutting down...");
-      wxtProcess.kill();
-      server.close();
-      process.exit(0);
-    };
-
-    process.on("SIGINT", cleanup);
-    process.on("SIGTERM", cleanup);
+    }
   } else {
     // Fallback to running package manager script
     const script = command ?? "dev";
     log(`Running: ${packageManager} ${script} ${args.join(" ")}`);
 
-    const devProcess = spawn(packageManager, [script, ...args], {
-      stdio: ["inherit", "pipe", "pipe"],
-      env: {
-        ...process.env,
-        FORCE_COLOR: "1",
-      },
+    const devProcess = spawnProcess(packageManager, [script, ...args], {
+      name: `${packageManager} ${script}`,
+    });
+    processes.push({
+      name: `${packageManager} ${script}`,
+      process: devProcess,
     });
 
-    devProcess.stdout?.on("data", (data: Buffer) => {
-      const text = data.toString();
-      process.stdout.write(text);
-
-      broadcast({
-        type: "stdout",
-        data: text,
-        timestamp: Date.now(),
-      });
-    });
-
-    devProcess.stderr?.on("data", (data: Buffer) => {
-      const text = data.toString();
-      process.stderr.write(text);
-
-      broadcast({
-        type: "stderr",
-        data: text,
-        timestamp: Date.now(),
-      });
-    });
-
-    devProcess.on("exit", (code) => {
-      broadcast({
-        type: "system",
-        data: `${packageManager} ${script} exited with code ${code}`,
-        timestamp: Date.now(),
-      });
+    devProcess.on("exit", () => {
       cleanup();
     });
-
-    const cleanup = () => {
-      log("Shutting down...");
-      devProcess.kill();
-      server.close();
-      process.exit(0);
-    };
-
-    process.on("SIGINT", cleanup);
-    process.on("SIGTERM", cleanup);
   }
 }
 

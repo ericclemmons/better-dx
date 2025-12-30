@@ -9,7 +9,8 @@
   "scripts": {
     "check": "biome check --write .",
     "prepare": "husky",
-    "dev": "turbo watch lint dev",
+    "dev": "turbo watch lint dev opencode",
+    "opencode": "opencode --port 4096",
     "start": "node --watch packages/better-dx/src/cli.ts",
     "build": "turbo build",
     "check-types": "turbo check-types",
@@ -22,13 +23,13 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "turbo": "^2.6.3",
     "@biomejs/biome": "2.3.10",
-    "ultracite": "6.5.0",
+    "@types/node": "^22.13.11",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
+    "turbo": "^2.6.3",
     "typescript": "catalog:",
-    "@types/node": "^22.13.11"
+    "ultracite": "6.5.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [

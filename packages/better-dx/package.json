@@ -19,6 +19,7 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "opencode": "opencode --port 4096",
     "postinstall": "wxt prepare"
   },
   "dependencies": {
