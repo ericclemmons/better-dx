@@ -9,6 +9,7 @@ export default defineConfig({
         "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta",
     },
     chromiumArgs: [
+      "--auto-open-devtools-for-tabs",
       "--hide-crash-restore-bubble",
       "--remote-debugging-port=9222",
       "--user-data-dir=./.wxt/chrome-data",
