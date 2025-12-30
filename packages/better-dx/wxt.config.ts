@@ -13,6 +13,6 @@ export default defineConfig({
       "--remote-debugging-port=9222",
       "--user-data-dir=./.wxt/chrome-data",
     ],
-    startUrls: ["http://localhost:1337", "http://localhost:5173"],
+    startUrls: ["http://localhost:5173"],
   },
 });

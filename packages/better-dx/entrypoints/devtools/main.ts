@@ -1,122 +1,202 @@
 /// <reference path="../../../.wxt/wxt.d.ts" />
 
-// const BETTER_DX_SSE_URL = "http://localhost:1337/events";
-// const TASK_PREFIX_REGEX = /^([a-z0-9@/_-]+:[a-z0-9_-]+):\s*/i;
+const BETTER_DX_SSE_URL = "http://localhost:1337/events";
 
-// interface LogMessage {
-//   type: "stdout" | "stderr" | "system";
-//   data: string;
-//   timestamp: number;
-// }
+interface LogMessage {
+  type: "stdout" | "stderr" | "system";
+  data: string;
+  timestamp: number;
+}
 
-// type LogLevel = "log" | "info" | "warn" | "error" | "debug";
+// ANSI color codes to CSS colors (Dracula theme)
+const ANSI_COLORS: Record<number, string> = {
+  30: "#282a36", // Black
+  31: "#ff5c57", // Red
+  32: "#5af78e", // Green
+  33: "#f3f99d", // Yellow
+  34: "#57c7ff", // Blue
+  35: "#ff6ac1", // Magenta
+  36: "#9aedfe", // Cyan
+  37: "#f1f1f0", // White
+  90: "#686868", // Bright Black
+  91: "#ff5c57", // Bright Red
+  92: "#5af78e", // Bright Green
+  93: "#f3f99d", // Bright Yellow
+  94: "#57c7ff", // Bright Blue
+  95: "#ff6ac1", // Bright Magenta
+  96: "#9aedfe", // Bright Cyan
+  97: "#eff0eb", // Bright White
+};
 
-// function parseTaskFromLine(line: string): {
-//   task: string | null;
-//   content: string;
-// } {
-//   const taskMatch = line.match(TASK_PREFIX_REGEX);
-//   if (taskMatch) {
-//     return {
-//       task: taskMatch[1] ?? null,
-//       content: line.slice(taskMatch[0].length),
-//     };
-//   }
-//   return { task: null, content: line };
-// }
+interface ParsedSegment {
+  text: string;
+  style: string;
+}
 
-// function detectLogLevel(
-//   content: string,
-//   streamType: LogMessage["type"]
-// ): LogLevel {
-//   const lower = content.toLowerCase();
+function parseAnsiToConsole(text: string): ParsedSegment[] {
+  const segments: ParsedSegment[] = [];
+  let currentText = "";
+  let currentStyle = "";
+  let i = 0;
 
-//   if (streamType === "system") {
-//     return "info";
-//   }
+  while (i < text.length) {
+    if (text[i] === "\x1b" && text[i + 1] === "[") {
+      // Found ANSI escape sequence
+      if (currentText) {
+        segments.push({ text: currentText, style: currentStyle });
+        currentText = "";
+      }
 
-//   if (streamType === "stderr") {
-//     if (
-//       lower.includes("error") ||
-//       lower.includes("err!") ||
-//       lower.includes("failed")
-//     ) {
-//       return "error";
-//     }
-//     return "warn";
-//   }
+      // Find the end of the escape sequence
+      let j = i + 2;
+      while (j < text.length && text[j] !== "m" && text[j] !== "H") {
+        j++;
+      }
 
-//   if (
-//     lower.includes("error") ||
-//     lower.includes("err!") ||
-//     lower.includes("failed")
-//   ) {
-//     return "error";
-//   }
-//   if (lower.includes("warn") || lower.includes("warning")) {
-//     return "warn";
-//   }
-//   if (lower.includes("debug") || lower.includes("verbose")) {
-//     return "debug";
-//   }
-//   if (
-//     lower.includes("info") ||
-//     lower.includes("ready") ||
-//     lower.includes("started")
-//   ) {
-//     return "info";
-//   }
+      // Skip non-color codes (like cursor positioning)
+      if (text[j] !== "m") {
+        i = j + 1;
+        continue;
+      }
 
-//   return "log";
-// }
+      const code = text.slice(i + 2, j);
+      const codes = code.split(";").map((c) => Number.parseInt(c, 10) || 0);
 
-// function escapeForEval(str: string): string {
-//   return str
-//     .replace(/\\/g, "\\\\")
-//     .replace(/'/g, "\\'")
-//     .replace(/\n/g, "\\n")
-//     .replace(/\r/g, "\\r");
-// }
+      // Reset styles
+      if (codes.includes(0)) {
+        currentStyle = "";
+      } else {
+        const styles: string[] = [];
 
-// function processMessage(message: LogMessage) {
-//   const lines = message.data.split("\n").filter((line) => line.trim());
+        for (const code of codes) {
+          if (code === 1) {
+            styles.push("font-weight: bold");
+          } else if (code === 2) {
+            styles.push("opacity: 0.7");
+          } else if (code === 22) {
+            // Reset bold/dim
+            styles.push("font-weight: normal");
+            styles.push("opacity: 1");
+          } else if (code >= 30 && code <= 37) {
+            styles.push(`color: ${ANSI_COLORS[code] ?? "#eff0eb"}`);
+          } else if (code >= 90 && code <= 97) {
+            styles.push(`color: ${ANSI_COLORS[code] ?? "#eff0eb"}`);
+          } else if (code >= 40 && code <= 47) {
+            // Background colors
+            const fgCode = code - 10;
+            styles.push(
+              `background-color: ${ANSI_COLORS[fgCode] ?? "#282a36"}`
+            );
+          } else if (code >= 100 && code <= 107) {
+            // Bright background colors
+            const fgCode = code - 10;
+            styles.push(
+              `background-color: ${ANSI_COLORS[fgCode] ?? "#282a36"}`
+            );
+          } else if (code === 39) {
+            // Reset foreground color
+            styles.push("color: inherit");
+          } else if (code === 49) {
+            // Reset background color
+            styles.push("background-color: transparent");
+          }
+        }
 
-//   for (const line of lines) {
-//     const { task, content } = parseTaskFromLine(line);
-//     const trimmedContent = content.trim();
+        currentStyle = styles.join("; ");
+      }
 
-//     if (!trimmedContent) {
-//       continue;
-//     }
+      i = j + 1;
+    } else {
+      currentText += text[i];
+      i++;
+    }
+  }
 
-//     const level = detectLogLevel(trimmedContent, message.type);
-//     const escaped = escapeForEval(trimmedContent);
-//     const taskLabel = task ?? "turbo";
+  if (currentText) {
+    segments.push({ text: currentText, style: currentStyle });
+  }
 
-//     const script = `console.${level}('%c[${escapeForEval(taskLabel)}]%c ${escaped}', 'color: #888; font-weight: bold', 'color: inherit')`;
-//     browser.devtools.inspectedWindow.eval(script);
-//   }
-// }
+  return segments.length > 0 ? segments : [{ text, style: "" }];
+}
 
-// function connectToSSE() {
-//   const eventSource = new EventSource(BETTER_DX_SSE_URL);
+function logToConsole(message: LogMessage) {
+  const data = message.data.trimEnd();
+  if (!data) {
+    return;
+  }
 
-//   eventSource.addEventListener("log", (event) => {
-//     try {
-//       const message: LogMessage = JSON.parse(event.data);
-//       processMessage(message);
-//     } catch {
-//       // Intentionally empty - skip malformed JSON
-//     }
-//   });
+  // Split by lines and process each line separately
+  const lines = data.split("\n");
 
-//   eventSource.addEventListener("error", () => {
-//     eventSource.close();
-//     setTimeout(connectToSSE, 3000);
-//   });
-// }
+  for (const line of lines) {
+    if (!line.trim() && lines.length > 1) {
+      // Skip empty lines unless it's the only line
+      continue;
+    }
 
-// connectToSSE();
+    const segments = parseAnsiToConsole(line);
+
+    if (segments.length === 0) {
+      continue;
+    }
+
+    // Build console.log arguments
+    // Combine all format strings into one, with styles as separate arguments
+    const formatParts: string[] = [];
+    const styleParts: string[] = [];
+
+    for (const segment of segments) {
+      if (segment.text) {
+        formatParts.push(`%c${segment.text}`);
+        styleParts.push(segment.style || "color: inherit");
+      }
+    }
+
+    if (formatParts.length === 0) {
+      continue;
+    }
+
+    // Combine all format strings into a single string
+    const formatString = formatParts.join("");
+
+    // Determine log level based on message type
+    let logMethod = "log";
+    if (message.type === "stderr") {
+      logMethod = "error";
+    } else if (message.type === "system") {
+      logMethod = "info";
+    }
+
+    // Build the console call: console.log(formatString, style1, style2, ...)
+    const script = `(function() {
+      const format = ${JSON.stringify(formatString)};
+      const styles = ${JSON.stringify(styleParts)};
+      console.${logMethod}(format, ...styles);
+    })()`;
+
+    chrome.devtools.inspectedWindow.eval(script);
+  }
+}
+
+function connectToSSE() {
+  const eventSource = new EventSource(BETTER_DX_SSE_URL);
+
+  eventSource.addEventListener("log", (event) => {
+    try {
+      const message: LogMessage = JSON.parse(event.data);
+      logToConsole(message);
+    } catch {
+      // Intentionally empty - skip malformed JSON
+    }
+  });
+
+  eventSource.addEventListener("error", () => {
+    eventSource.close();
+    setTimeout(connectToSSE, 3000);
+  });
+}
+
+connectToSSE();
 
 try {
   chrome.devtools.panels.create(

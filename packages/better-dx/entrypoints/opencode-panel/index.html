@@ -51,11 +51,11 @@
     </style>
   </head>
   <body>
-    <!-- <iframe
+    <iframe
       id="opencode-frame"
       src="http://localhost:4096/"
       allow="clipboard-read; clipboard-write"
-    ></iframe> -->
+    ></iframe>
     <div class="error" id="error">
       <h2>OpenCode Not Running</h2>
       <p>Start OpenCode to use this panel:</p>
@@ -63,23 +63,19 @@
     </div>
     <script>
     "use strict";
-    window.location.href = "http://localhost:4096/";
-    // window.location.href =
-    // "http://127.0.0.1:4096/L1VzZXJzL2VyaWMvUHJvamVjdHMvZXJpY2NsZW1tb25zL2JldHRlci1keA/session/ses_4a42046d8fferf6Z4aNJJTPX5C";
-    // return;
-    // const iframe = document.getElementById("opencode-frame");
-    // const error = document.getElementById("error");
+    const iframe = document.getElementById("opencode-frame");
+    const error = document.getElementById("error");
 
-    // iframe.addEventListener("error", () => {
-    //   iframe.style.display = "none";
-    //   error.style.display = "flex";
-    // });
+    iframe.addEventListener("error", () => {
+      iframe.style.display = "none";
+      error.style.display = "flex";
+    });
 
-    // // Check if OpenCode is reachable
-    // fetch("http://localhost:4096/", { mode: "no-cors" }).catch(() => {
-    //   iframe.style.display = "none";
-    //   error.style.display = "flex";
-    // });
+    // Check if OpenCode is reachable
+    fetch("http://localhost:4096/", { mode: "no-cors" }).catch(() => {
+      iframe.style.display = "none";
+      error.style.display = "flex";
+    });
     </script>
   </body>
 </html>
