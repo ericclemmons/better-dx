@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { devToolsMiddleware } from "@ai-sdk/devtools";
 import { google } from "@ai-sdk/google";
 import { createContext } from "@better-dx/api/context";
 import { appRouter } from "@better-dx/api/routers/index";
@@ -7,7 +8,7 @@ import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
-import { convertToModelMessages, streamText } from "ai";
+import { convertToModelMessages, streamText, wrapLanguageModel } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -72,8 +73,11 @@ app.post("/ai", async (c) => {
   const body = await c.req.json();
   const uiMessages = body.messages || [];
   const result = streamText({
-    model: google("gemini-2.5-flash"),
     messages: await convertToModelMessages(uiMessages),
+    model: wrapLanguageModel({
+      middleware: devToolsMiddleware(),
+      model: google("gemini-2.5-flash"),
+    }),
   });
 
   return result.toUIMessageStreamResponse();
