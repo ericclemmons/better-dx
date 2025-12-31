@@ -1,5 +1,5 @@
 {
-  "name": "better-dx",
+  "name": "monorepo",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -9,20 +9,22 @@
   "scripts": {
     "check": "biome check --write .",
     "prepare": "husky",
-    "dev": "turbo watch lint dev opencode",
+    "dev": "better-dev -- turbo watch lint dev",
     "opencode": "opencode --port 4096",
-    "start": "node --watch packages/better-dx/src/cli.ts",
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
-    "dev:server": "turbo -F server dev"
+    "dev:server": "turbo -F server dev",
+    "dev:opencode": "opencode --port 4096",
+    "dev:turborepo": "pnpm dlx turbo devtools --no-open"
   },
   "dependencies": {
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "better-dev": "workspace:*",
     "@biomejs/biome": "catalog:",
     "@types/node": "^22.13.11",
     "husky": "catalog:",

@@ -1,29 +1,30 @@
 packages:
   - apps/*
   - packages/*
+
 catalog:
-  "@ai-sdk/google": ^3.0.1
-  "@ai-sdk/react": ^2.0.39
-  "@base-ui/react": ^1.0.0
-  "@biomejs/biome": 2.3.10
-  "@hono/node-server": ^1.14.4
-  "@hookform/resolvers": ^5.1.1
-  "@opentui/core": ^0.1.63
-  "@opentui/react": ^0.1.63
-  "@orpc/client": ^1.12.2
-  "@orpc/openapi": ^1.12.2
-  "@orpc/server": ^1.12.2
-  "@orpc/tanstack-query": ^1.12.2
-  "@orpc/zod": ^1.12.2
-  "@tailwindcss/vite": ^4.0.15
-  "@tanstack/react-form": ^1.12.3
-  "@tanstack/react-query": ^5.90.12
-  "@tanstack/react-query-devtools": ^5.91.1
-  "@tanstack/react-router": ^1.141.1
-  "@tanstack/react-router-devtools": ^1.141.1
-  "@tanstack/router-plugin": ^1.141.1
-  "@vitejs/plugin-react": ^4.3.4
-  "@wxt-dev/module-react": ^1.1.5
+  '@ai-sdk/google': ^3.0.1
+  '@ai-sdk/react': ^2.0.39
+  '@base-ui/react': ^1.0.0
+  '@biomejs/biome': 2.3.10
+  '@hono/node-server': ^1.14.4
+  '@hookform/resolvers': ^5.1.1
+  '@opentui/core': ^0.1.63
+  '@opentui/react': ^0.1.63
+  '@orpc/client': ^1.12.2
+  '@orpc/openapi': ^1.12.2
+  '@orpc/server': ^1.12.2
+  '@orpc/tanstack-query': ^1.12.2
+  '@orpc/zod': ^1.12.2
+  '@tailwindcss/vite': ^4.0.15
+  '@tanstack/react-form': ^1.12.3
+  '@tanstack/react-query': ^5.90.12
+  '@tanstack/react-query-devtools': ^5.91.1
+  '@tanstack/react-router': ^1.141.1
+  '@tanstack/react-router-devtools': ^1.141.1
+  '@tanstack/router-plugin': ^1.141.1
+  '@vitejs/plugin-react': ^4.3.4
+  '@wxt-dev/module-react': ^1.1.5
   ai: ^6.0.3
   ansi-to-html: ^0.7.2
   class-variance-authority: ^0.7.1
@@ -49,3 +50,6 @@ catalog:
   vite: ^6.2.2
   wxt: ^0.20.6
   zod: ^4.1.13
+
+onlyBuiltDependencies:
+  - spawn-sync

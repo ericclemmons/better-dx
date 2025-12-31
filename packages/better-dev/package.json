@@ -1,14 +1,9 @@
 {
-  "name": "better-dx",
+  "name": "better-dev",
   "version": "0.0.1",
   "type": "module",
   "bin": {
-    "better-dx": "./dist/cli.js"
-  },
-  "exports": {
-    ".": {
-      "default": "./dist/index.js"
-    }
+    "better-dev": "./src/cli.ts"
   },
   "scripts": {
     "build": "tsdown",
