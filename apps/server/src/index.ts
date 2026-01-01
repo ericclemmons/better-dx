@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { devToolsMiddleware } from "@ai-sdk/devtools";
 import { google } from "@ai-sdk/google";
 import { createContext } from "@better-dx/api/context";
 import { appRouter } from "@better-dx/api/routers/index";
@@ -7,7 +8,7 @@ import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
-import { streamText, convertToModelMessages } from "ai";
+import { convertToModelMessages, streamText, wrapLanguageModel } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -20,7 +21,7 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "",
     allowMethods: ["GET", "POST", "OPTIONS"],
-  }),
+  })
 );
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
@@ -49,7 +50,7 @@ app.use("/*", async (c, next) => {
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",
-    context: context,
+    context,
   });
 
   if (rpcResult.matched) {
@@ -58,7 +59,7 @@ app.use("/*", async (c, next) => {
 
   const apiResult = await apiHandler.handle(c.req.raw, {
     prefix: "/api-reference",
-    context: context,
+    context,
   });
 
   if (apiResult.matched) {
@@ -72,8 +73,11 @@ app.post("/ai", async (c) => {
   const body = await c.req.json();
   const uiMessages = body.messages || [];
   const result = streamText({
-    model: google("gemini-2.5-flash"),
-    messages: convertToModelMessages(uiMessages),
+    messages: await convertToModelMessages(uiMessages),
+    model: wrapLanguageModel({
+      middleware: devToolsMiddleware(),
+      model: google("gemini-2.5-flash"),
+    }),
   });
 
   return result.toUIMessageStreamResponse();
@@ -92,5 +96,5 @@ serve(
   },
   (info) => {
     console.log(`Server is running on http://localhost:${info.port}`);
-  },
+  }
 );

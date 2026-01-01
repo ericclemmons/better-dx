@@ -1,0 +1,38 @@
+{
+  "name": "better-dev",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "better-dev": "./src/cli.ts"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc --noEmit",
+    "dev": "wxt --port 5555",
+    "dev:firefox": "wxt -b firefox",
+    "build:extension": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "opencode": "opencode --port 4096",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@hono/node-server": "catalog:",
+    "ansi-to-html": "catalog:",
+    "hono": "catalog:"
+  },
+  "devDependencies": {
+    "@better-dx/config": "workspace:*",
+    "@types/node": "^22.13.11",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@wxt-dev/module-react": "catalog:",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "wxt": "catalog:"
+  }
+}
