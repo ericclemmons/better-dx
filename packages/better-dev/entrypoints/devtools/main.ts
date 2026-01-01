@@ -1,5 +1,3 @@
-/// <reference path="../../../.wxt/wxt.d.ts" />
-
 const BETTER_DX_SSE_URL = "http://localhost:1337/events";
 
 interface LogMessage {
@@ -196,7 +194,7 @@ function connectToSSE() {
   });
 }
 
-connectToSSE();
+// connectToSSE();
 
 try {
   chrome.devtools.panels.create(
@@ -204,6 +202,20 @@ try {
     "icon/128.png",
     "opencode-panel.html"
   );
+} catch (error) {
+  alert(error);
+}
+try {
+  chrome.devtools.panels.create(
+    "Turborepo",
+    "icon/128.png",
+    "turbo-panel.html"
+  );
+} catch (error) {
+  alert(error);
+}
+try {
+  chrome.devtools.panels.create("AI", "icon/128.png", "ai-panel.html");
 } catch (error) {
   alert(error);
 }
