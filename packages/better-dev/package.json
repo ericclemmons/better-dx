@@ -19,6 +19,10 @@
   },
   "dependencies": {
     "@hono/node-server": "catalog:",
+    "@tanstack/react-devtools": "^0.9.0",
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-query-devtools": "catalog:",
+    "@tanstack/react-router-devtools": "catalog:",
     "ansi-to-html": "catalog:",
     "hono": "catalog:"
   },
