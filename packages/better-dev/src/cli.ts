@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// https://alchemy.run/telemetry/#how-to-opt-out
+process.env.ALCHEMY_TELEMETRY_DISABLED = "1";
+
 // 1. pnpx alchemy configure
 // **Make sure you ADD `access:write` + `dns_records:edit`**
 //
