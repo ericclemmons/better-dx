@@ -187,8 +187,8 @@ importers:
   apps/server:
     dependencies:
       '@ai-sdk/devtools':
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
       '@ai-sdk/google':
         specifier: 'catalog:'
         version: 3.0.1(zod@4.2.1)
@@ -454,8 +454,8 @@ packages:
   '@1natsu/wait-element@4.1.2':
     resolution: {integrity: sha512-qWxSJD+Q5b8bKOvESFifvfZ92DuMsY+03SBNjTO34ipJLP6mZ9yK4bQz/vlh48aEQXoJfaZBqUwKL5BdI5iiWw==}
 
-  '@ai-sdk/devtools@0.0.2':
-    resolution: {integrity: sha512-iU/3gpyPPwUM2+G2HkdUJ5eQI5ti6/tplUoZL4EUUIJi2EBKHcvl03Boe72wlgpmMmk9HlpnsUjapHKUto7MgQ==}
+  '@ai-sdk/devtools@0.0.3':
+    resolution: {integrity: sha512-bkkYTuEDqK70bXC30yJLmRH+9xKvo9HCneGH44MKJFssYfwXjyz64G++uEgb+bV2+E/qd/81YNHT+9gcI9q6IA==}
     hasBin: true
 
   '@ai-sdk/gateway@2.0.23':
@@ -494,6 +494,10 @@ packages:
 
   '@ai-sdk/provider@3.0.0':
     resolution: {integrity: sha512-m9ka3ptkPQbaHHZHqDXDF9C9B5/Mav0KTdky1k2HZ3/nrW2t1AgObxIVPyGDWQNS9FXT/FS6PIoSjpcP/No8rQ==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/provider@3.0.1':
+    resolution: {integrity: sha512-2lR4w7mr9XrydzxBSjir4N6YMGdXD+Np1Sh0RXABh7tWdNFFwIeRI1Q+SaYZMbfL8Pg8RRLcrxQm51yxTLhokg==}
     engines: {node: '>=18'}
 
   '@ai-sdk/react@2.0.118':
@@ -5635,9 +5639,9 @@ snapshots:
       defu: 6.1.4
       many-keys-map: 2.0.1
 
-  '@ai-sdk/devtools@0.0.2':
+  '@ai-sdk/devtools@0.0.3':
     dependencies:
-      '@ai-sdk/provider': 3.0.0
+      '@ai-sdk/provider': 3.0.1
       '@hono/node-server': 1.19.7(hono@4.11.3)
       hono: 4.11.3
 
@@ -5680,6 +5684,10 @@ snapshots:
       json-schema: 0.4.0
 
   '@ai-sdk/provider@3.0.0':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/provider@3.0.1':
     dependencies:
       json-schema: 0.4.0
 

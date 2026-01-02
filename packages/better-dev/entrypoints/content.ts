@@ -1,5 +1,7 @@
+/// <reference path="../.wxt/wxt.d.ts" />
+
 export default defineContentScript({
-  matches: ["*://localhost:3000/*"],
+  matches: ["<all_urls>"],
   main() {
     console.log("Hello content.");
   },

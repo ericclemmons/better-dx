@@ -16,8 +16,8 @@
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "dev:opencode": "opencode --port 4096",
-    "dev:turborepo": "pnpm dlx turbo devtools --no-open"
+    "dev:opencode": "echo opencode --port 4096",
+    "dev:turborepo": "echo devtools --no-open"
   },
   "dependencies": {
     "dotenv": "catalog:",

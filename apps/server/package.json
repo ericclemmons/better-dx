@@ -10,7 +10,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@ai-sdk/devtools": "^0.0.2",
+    "@ai-sdk/devtools": "^0.0.3",
     "@ai-sdk/google": "catalog:",
     "@better-dx/api": "workspace:*",
     "@hono/node-server": "catalog:",
