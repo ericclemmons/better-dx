@@ -5,6 +5,7 @@
   "bin": {
     "better-dev": "./src/cli.ts"
   },
+  "files": [],
   "scripts": {
     "build": "tsdown",
     "check-types": "tsc --noEmit",
