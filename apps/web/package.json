@@ -11,33 +11,37 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/react": "catalog:",
     "@base-ui/react": "catalog:",
+    "@better-dx/api": "workspace:*",
     "@hookform/resolvers": "catalog:",
+    "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/tanstack-query": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-form": "catalog:",
+    "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
+    "ai": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "dotenv": "catalog:",
     "lucide-react": "catalog:",
     "next-themes": "catalog:",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "shadcn": "catalog:",
     "sonner": "catalog:",
+    "streamdown": "catalog:",
     "tailwind-merge": "catalog:",
     "tw-animate-css": "catalog:",
-    "@orpc/tanstack-query": "catalog:",
-    "@orpc/client": "catalog:",
-    "@orpc/server": "catalog:",
-    "@tanstack/react-query": "catalog:",
-    "ai": "catalog:",
-    "@ai-sdk/react": "catalog:",
-    "streamdown": "catalog:",
-    "dotenv": "catalog:",
-    "zod": "catalog:",
-    "@better-dx/api": "workspace:*"
+    "zod": "catalog:"
   },
   "devDependencies": {
+    "@better-dx/config": "workspace:*",
+    "@tanstack/devtools-vite": "^0.4.0",
+    "@tanstack/react-devtools": "^0.9.0",
+    "@tanstack/react-query-devtools": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
     "@tanstack/router-plugin": "catalog:",
     "@types/node": "^22.13.13",
@@ -46,9 +50,7 @@
     "@vitejs/plugin-react": "catalog:",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
-    "vite": "catalog:",
-    "@tanstack/react-query-devtools": "catalog:",
     "typescript": "catalog:",
-    "@better-dx/config": "workspace:*"
+    "vite": "catalog:"
   }
 }
