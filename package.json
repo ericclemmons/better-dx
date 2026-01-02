@@ -9,7 +9,7 @@
   "scripts": {
     "check": "biome check --write .",
     "prepare": "husky",
-    "dev": "better-dev -- turbo watch lint dev",
+    "dev": "better-dev -- turbo dev",
     "opencode": "opencode --port 4096",
     "build": "turbo build",
     "check-types": "turbo check-types",
@@ -24,9 +24,9 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "better-dev": "workspace:*",
     "@biomejs/biome": "catalog:",
     "@types/node": "^22.13.11",
+    "better-dev": "workspace:*",
     "husky": "catalog:",
     "lint-staged": "catalog:",
     "turbo": "catalog:",

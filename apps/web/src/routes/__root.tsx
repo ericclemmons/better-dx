@@ -1,9 +1,9 @@
 import type { AppRouterClient } from "@better-dx/api/routers/index";
 import { createORPCClient } from "@orpc/client";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
+import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import {
   createRootRouteWithContext,
   HeadContent,
