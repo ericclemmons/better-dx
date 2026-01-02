@@ -70,16 +70,18 @@ await concurrently(
       name: "better-dev:turbo devtools",
       prefixColor: "magenta",
     },
+    // TODO: This should open a new session & that should be the default path in the opencode panel AND the tunnel
     {
       command: "pnpx opencode-ai@dev --port 4096 serve",
       name: "better-dev:opencode",
       prefixColor: "gray",
     },
-    {
-      command: `cloudflared tunnel run --token ${token.unencrypted}`,
-      name: "better-dev:cloudflared",
-      prefixColor: "#F38020",
-    },
+    // TODO: This needs to be gated behind OAuth or something
+    // {
+    //   command: `cloudflared tunnel run --token=${token.unencrypted}`,
+    //   name: "better-dev:cloudflared",
+    //   prefixColor: "#F38020",
+    // },
   ],
   {
     killOthersOn: ["failure"],
