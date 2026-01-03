@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="iconGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Black rounded square background -->
+  <rect x="4" y="4" width="120" height="120" rx="24" fill="#000000"/>
+  
+  <!-- Left bracket < -->
+  <path d="M38 44L22 64L38 84" stroke="url(#iconGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Right bracket > -->
+  <path d="M90 44L106 64L90 84" stroke="url(#iconGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Lightning bolt in center -->
+  <path d="M70 38L54 66H64L58 90L74 62H64L70 38Z" fill="url(#iconGrad)"/>
+</svg>
