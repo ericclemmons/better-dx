@@ -1,5 +1,7 @@
+/// <reference path="../../.wxt/wxt.d.ts" />
+
 try {
-  chrome.devtools.panels.create(
+  (chrome as typeof browser).devtools.panels.create(
     "OpenCode",
     "icon/128.png",
     "opencode-panel.html"
