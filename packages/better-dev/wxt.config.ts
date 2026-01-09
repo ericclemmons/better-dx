@@ -5,6 +5,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: {
     action: {},
+    permissions: ["contextMenus", "activeTab", "sidePanel"],
     host_permissions: [
       "http://localhost:*/*",
       "http://127.0.0.1:*/*",

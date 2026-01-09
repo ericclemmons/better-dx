@@ -19,7 +19,9 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@better-dx/react-screenshot": "workspace:*",
     "@hono/capnweb": "^0.1.0",
+    "launch-editor": "^2.10.0",
     "@hono/node-server": "catalog:",
     "@hono/node-ws": "^1.2.0",
     "@opencode-ai/sdk": "^1.0.224",
@@ -30,8 +32,10 @@
     "alchemy": "^0.82.2",
     "ansi-to-html": "catalog:",
     "capnweb": "^0.4.0",
-    "concurrently": "^9.2.1",
-    "hono": "catalog:"
+    "execa": "^9.6.0",
+    "tree-kill": "^1.2.2",
+    "hono": "catalog:",
+    "react-grab": "^0.0.98"
   },
   "devDependencies": {
     "@better-dx/config": "workspace:*",
