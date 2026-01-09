@@ -9,7 +9,7 @@
   "scripts": {
     "check": "biome check --write .",
     "prepare": "husky",
-    "dev": "better-dev -- turbo dev",
+    "dev": "node --watch --watch-kill-signal=SIGTERM packages/better-dev/src/cli.ts -- turbo dev",
     "opencode": "opencode --port 4096",
     "build": "turbo build",
     "check-types": "turbo check-types",

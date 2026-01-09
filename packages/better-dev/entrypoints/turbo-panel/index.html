@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>OpenCode</title>
+    <title>Turborepo Devtools</title>
     <style>
     * {
       margin: 0;
@@ -12,72 +11,17 @@
       box-sizing: border-box;
     }
     html,
-    body {
+    body,
+    #root {
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: #1e1e1e;
     }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .error {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: #888;
-      font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    .error h2 {
-      color: #ccc;
-      margin-bottom: 10px;
-    }
-    .error p {
-      margin-bottom: 20px;
-    }
-    .error code {
-      background: #2d2d2d;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
     </style>
   </head>
   <body>
-    <iframe
-      id="turbo-frame"
-      src="https://turborepo.dev/devtools?port=9876"
-      allow="clipboard-read; clipboard-write"
-    ></iframe>
-    <div class="error" id="error">
-      <h2>Turborepo Not Running</h2>
-      <p>Start Turborepo to use this panel:</p>
-      <code>turbo devtools --no-open</code>
-    </div>
-    <script>
-    "use strict";
-    const iframe = document.getElementById("turbo-frame");
-    const error = document.getElementById("error");
-
-    iframe.addEventListener("error", () => {
-      iframe.style.display = "none";
-      error.style.display = "flex";
-    });
-
-    // Check if Turborepo is reachable
-    fetch("https://turborepo.dev/devtools?port=9876", {
-      mode: "no-cors",
-    }).catch(() => {
-      iframe.style.display = "none";
-      error.style.display = "flex";
-    });
-    </script>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
   </body>
 </html>

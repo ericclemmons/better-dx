@@ -34,19 +34,22 @@ process.env.ALCHEMY_TELEMETRY_DISABLED = "1";
 //
 // 2. pnpx alchemy util create-cloudflare-tunnel
 
-import path from "node:path";
 import { newRpcResponse } from "@hono/capnweb";
 import { serve } from "@hono/node-server";
 import { createNodeWebSocket } from "@hono/node-ws";
 import { createOpencode, createOpencodeClient } from "@opencode-ai/sdk";
 import alchemy from "alchemy";
 import { Tunnel } from "alchemy/cloudflare";
-import concurrently from "concurrently";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { streamSSE } from "hono/streaming";
+import { type LogEvent, ProcessManager } from "./process-manager.ts";
 import { BetterDevRPC } from "./rpc.ts";
 
 const OPENCODE_BASE_URL = "http://127.0.0.1:4096";
 const RPC_PORT = 1337;
+
+const processManager = new ProcessManager();
 
 async function isOpencodeRunning(): Promise<boolean> {
   try {
@@ -90,9 +93,34 @@ function startRpcServer(
   const app = new Hono();
   const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app });
 
+  app.use("*", cors({ origin: "*" }));
+
   app.all("/rpc", (c) => {
-    return newRpcResponse(c, new BetterDevRPC(opencodeClient, directory), {
-      upgradeWebSocket,
+    return newRpcResponse(
+      c,
+      new BetterDevRPC(opencodeClient, directory, processManager),
+      { upgradeWebSocket }
+    );
+  });
+
+  app.get("/logs", (c) => {
+    return streamSSE(c, async (stream) => {
+      const handler = (event: LogEvent) => {
+        stream.writeSSE({
+          event: event.type,
+          data: JSON.stringify(event),
+        });
+      };
+
+      processManager.on("log", handler);
+
+      stream.onAbort(() => {
+        processManager.off("log", handler);
+      });
+
+      while (true) {
+        await stream.sleep(1000);
+      }
     });
   });
 
@@ -104,6 +132,9 @@ function startRpcServer(
   injectWebSocket(server);
   console.log(
     `[better-dev] RPC server running at http://127.0.0.1:${RPC_PORT}/rpc`
+  );
+  console.log(
+    `[better-dev] Log stream available at http://127.0.0.1:${RPC_PORT}/logs`
   );
 
   return server;
@@ -132,30 +163,17 @@ const command =
   process.argv.slice(Math.max(process.argv.indexOf("--"), 2) + 1).join(" ") ||
   "pnpm dev";
 
-await concurrently(
-  [
-    { command, name: command, prefixColor: "white" },
-    {
-      command: "pnpx @ai-sdk/devtools",
-      cwd: path.join(process.cwd(), "apps/server"),
-      name: "better-dev:@ai-sdk/devtools",
-      prefixColor: "whiteBright",
-    },
-    {
-      command: "turbo devtools --no-open",
-      name: "better-dev:turbo devtools",
-      prefixColor: "magenta",
-    },
-    // TODO: This needs to be gated behind OAuth or something
-    // {
-    //   command: `cloudflared tunnel run --token=${token.unencrypted}`,
-    //   name: "better-dev:cloudflared",
-    //   prefixColor: "#F38020",
-    // },
-  ],
-  {
-    killOthersOn: ["failure"],
-  }
-).result.catch(() => {
-  // noop
+await processManager.start(command, { name: "main" });
+
+async function cleanup() {
+  console.info("[better-dev] Cleaning up...");
+  await processManager.stopAll();
+  process.exit(0);
+}
+
+process.on("SIGINT", () => {
+  cleanup();
+});
+process.on("SIGTERM", () => {
+  cleanup();
 });
