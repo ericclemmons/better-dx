@@ -409,9 +409,18 @@ importers:
 
   packages/better-dev:
     dependencies:
+      '@hono/capnweb':
+        specifier: ^0.1.0
+        version: 0.1.0(capnweb@0.4.0)(hono@4.11.3)
       '@hono/node-server':
         specifier: 'catalog:'
         version: 1.19.7(hono@4.11.3)
+      '@hono/node-ws':
+        specifier: ^1.2.0
+        version: 1.2.0(@hono/node-server@1.19.7(hono@4.11.3))(hono@4.11.3)
+      '@opencode-ai/sdk':
+        specifier: ^1.0.224
+        version: 1.0.224
       '@tanstack/react-devtools':
         specifier: ^0.9.0
         version: 0.9.0(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)
@@ -430,6 +439,9 @@ importers:
       ansi-to-html:
         specifier: 'catalog:'
         version: 0.7.2
+      capnweb:
+        specifier: ^0.4.0
+        version: 0.4.0
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -1530,11 +1542,24 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
+  '@hono/capnweb@0.1.0':
+    resolution: {integrity: sha512-P+HZA5PoQss8zwfJlq3Tsnxq9pG8tbAY/AFeDIh4dCCn4k7ew24uYG1eSpH8tGDQGDF7gdw7Om9QEq27OLZnGA==}
+    peerDependencies:
+      capnweb: '>=0.2.0'
+      hono: '>=4.0.0'
+
   '@hono/node-server@1.19.7':
     resolution: {integrity: sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@hono/node-ws@1.2.0':
+    resolution: {integrity: sha512-OBPQ8OSHBw29mj00wT/xGYtB6HY54j0fNSdVZ7gZM3TUeq0So11GXaWtFf1xWxQNfumKIsj0wRuLKWfVsO5GgQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      '@hono/node-server': ^1.11.1
+      hono: ^4.6.0
 
   '@hookform/resolvers@5.2.2':
     resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
@@ -1943,6 +1968,9 @@ packages:
 
   '@open-draft/until@2.1.0':
     resolution: {integrity: sha512-U69T3ItWHvLwGg5eJ0n3I62nWuE6ilHlmz7zM0npLBRvPRd7e6NYmg54vvRtP5mZG7kZqZCFVdsTWo7BPtBujg==}
+
+  '@opencode-ai/sdk@1.0.224':
+    resolution: {integrity: sha512-gODyWLDTaz38qISxRdJKsEiFqvJNcFzu4/awoSICIl8j8gx6qDxLsYWVp/ToO4LKXTvHMn8yyZpM3ZEdGhDC+g==}
 
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
@@ -3410,6 +3438,9 @@ packages:
 
   caniuse-lite@1.0.30001761:
     resolution: {integrity: sha512-JF9ptu1vP2coz98+5051jZ4PwQgd2ni8A+gYSN7EA7dPKIMf0pDlSUxhdmVOaV3/fYK5uWBkgSXJaRLr4+3A6g==}
+
+  capnweb@0.4.0:
+    resolution: {integrity: sha512-OgqPQcxnrAIqjrkAuwI4N9MP/mzseM5w9oLWb/oU63KveBJl1c8p41etLSVQUlYFiAYZu+h6/LJxKaDJd93xFw==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -7999,9 +8030,23 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
+  '@hono/capnweb@0.1.0(capnweb@0.4.0)(hono@4.11.3)':
+    dependencies:
+      capnweb: 0.4.0
+      hono: 4.11.3
+
   '@hono/node-server@1.19.7(hono@4.11.3)':
     dependencies:
       hono: 4.11.3
+
+  '@hono/node-ws@1.2.0(@hono/node-server@1.19.7(hono@4.11.3))(hono@4.11.3)':
+    dependencies:
+      '@hono/node-server': 1.19.7(hono@4.11.3)
+      hono: 4.11.3
+      ws: 8.18.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.69.0(react@19.2.3))':
     dependencies:
@@ -8487,6 +8532,8 @@ snapshots:
       outvariant: 1.4.3
 
   '@open-draft/until@2.1.0': {}
+
+  '@opencode-ai/sdk@1.0.224': {}
 
   '@opentelemetry/api@1.9.0': {}
 
@@ -10121,6 +10168,8 @@ snapshots:
   camelcase@8.0.0: {}
 
   caniuse-lite@1.0.30001761: {}
+
+  capnweb@0.4.0: {}
 
   ccount@2.0.1: {}
 

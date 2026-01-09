@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>OpenCode</title>
     <style>
     * {
@@ -53,29 +52,13 @@
   <body>
     <iframe
       id="opencode-frame"
-      src="http://localhost:4096/"
       allow="clipboard-read; clipboard-write"
     ></iframe>
     <div class="error" id="error">
       <h2>OpenCode Not Running</h2>
       <p>Start OpenCode to use this panel:</p>
-      <code>opencode</code>
+      <code>better-dev</code>
     </div>
-    <script>
-    "use strict";
-    const iframe = document.getElementById("opencode-frame");
-    const error = document.getElementById("error");
-
-    iframe.addEventListener("error", () => {
-      iframe.style.display = "none";
-      error.style.display = "flex";
-    });
-
-    // Check if OpenCode is reachable
-    fetch("http://localhost:4096/", { mode: "no-cors" }).catch(() => {
-      iframe.style.display = "none";
-      error.style.display = "flex";
-    });
-    </script>
+    <script type="module" src="./main.ts"></script>
   </body>
 </html>

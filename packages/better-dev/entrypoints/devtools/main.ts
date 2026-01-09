@@ -1,12 +1,4 @@
-try {
-  chrome.devtools.panels.create(
-    "OpenCode",
-    "icon/128.png",
-    "opencode-panel.html"
-  );
-} catch (error) {
-  console.error("Failed to create OpenCode panel:", error);
-}
+/// <reference path="../../.wxt/wxt.d.ts" />
 
 try {
   chrome.devtools.panels.create(

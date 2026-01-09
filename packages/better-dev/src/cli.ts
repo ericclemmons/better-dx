@@ -35,13 +35,86 @@ process.env.ALCHEMY_TELEMETRY_DISABLED = "1";
 // 2. pnpx alchemy util create-cloudflare-tunnel
 
 import path from "node:path";
+import { newRpcResponse } from "@hono/capnweb";
+import { serve } from "@hono/node-server";
+import { createNodeWebSocket } from "@hono/node-ws";
+import { createOpencode, createOpencodeClient } from "@opencode-ai/sdk";
 import alchemy from "alchemy";
 import { Tunnel } from "alchemy/cloudflare";
 import concurrently from "concurrently";
+import { Hono } from "hono";
+import { BetterDevRPC } from "./rpc.ts";
 
-const app = await alchemy("better-dev", { local: true, password: "change-me" });
+const OPENCODE_BASE_URL = "http://127.0.0.1:4096";
+const RPC_PORT = 1337;
 
-const { token } = await Tunnel("tunnel", {
+async function isOpencodeRunning(): Promise<boolean> {
+  try {
+    const response = await fetch(`${OPENCODE_BASE_URL}/global/health`);
+    const data = (await response.json()) as { healthy?: boolean };
+    return data.healthy === true;
+  } catch {
+    return false;
+  }
+}
+
+async function ensureOpencode() {
+  const directory = process.cwd();
+
+  if (await isOpencodeRunning()) {
+    console.log("[better-dev] Connected to existing OpenCode server");
+    return createOpencodeClient({
+      baseUrl: OPENCODE_BASE_URL,
+      directory,
+      throwOnError: true,
+    });
+  }
+
+  console.log("[better-dev] Starting OpenCode server...");
+  await createOpencode({
+    hostname: "127.0.0.1",
+    port: 4096,
+  });
+
+  return createOpencodeClient({
+    baseUrl: OPENCODE_BASE_URL,
+    directory,
+    throwOnError: true,
+  });
+}
+
+function startRpcServer(
+  opencodeClient: Awaited<ReturnType<typeof createOpencodeClient>>
+) {
+  const directory = process.cwd();
+  const app = new Hono();
+  const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app });
+
+  app.all("/rpc", (c) => {
+    return newRpcResponse(c, new BetterDevRPC(opencodeClient, directory), {
+      upgradeWebSocket,
+    });
+  });
+
+  const server = serve({
+    fetch: app.fetch,
+    port: RPC_PORT,
+  });
+
+  injectWebSocket(server);
+  console.log(
+    `[better-dev] RPC server running at http://127.0.0.1:${RPC_PORT}/rpc`
+  );
+
+  return server;
+}
+
+const alchemyApp = await alchemy("better-dev", {
+  local: true,
+  password: "change-me",
+});
+
+const { token: _token } = await Tunnel("tunnel", {
   adopt: true,
   ingress: [
     { hostname: "chat.ericclemmons.com", service: "http://localhost:4096" },
@@ -50,7 +123,10 @@ const { token } = await Tunnel("tunnel", {
   ],
 });
 
-await app.finalize();
+await alchemyApp.finalize();
+
+const opencodeClient = await ensureOpencode();
+startRpcServer(opencodeClient);
 
 const command =
   process.argv.slice(Math.max(process.argv.indexOf("--"), 2) + 1).join(" ") ||
@@ -69,12 +145,6 @@ await concurrently(
       command: "turbo devtools --no-open",
       name: "better-dev:turbo devtools",
       prefixColor: "magenta",
-    },
-    // TODO: This should open a new session & that should be the default path in the opencode panel AND the tunnel
-    {
-      command: "pnpx opencode-ai@dev --port 4096 serve",
-      name: "better-dev:opencode",
-      prefixColor: "gray",
     },
     // TODO: This needs to be gated behind OAuth or something
     // {
